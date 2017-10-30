@@ -1,0 +1,68 @@
+#Import Packages
+import pandas
+import numpy
+from scipy.optimize import minimize
+from scipy.stats import norm
+import re
+import os
+from plotnine import *
+
+os.chdir("/Users/madelinebuynak/Desktop")
+
+data = pandas.read_csv("ponzr1.csv",header=0,sep='\t')
+
+subset=data.loc[data.mutation.sin(['WT','M124K']),:]
+
+def nllike(p,obs):
+    B0=p(0)
+    B1=p(1)
+    sigma=p(2)
+
+def null (p,obs):
+    B0=p[0]
+    sigma=p[1]
+    
+    expected=B0
+    nll=-1*norm(expected,sigma).logpdf(obs.y).sum()
+    return nll
+    
+def alter (p,obs):
+    B0=p[0]
+    B1=p[1]
+    sigma=p[2]
+    
+expected=B0+B1*obs.x
+nll=-1*norm(expected,sigma).logpdf(obs.y).sum()
+return nll
+
+initialGuess=numpy.array([1,1,1])
+fitNull=minimize(nllike,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
+fitAlter=minimize(nllike,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
+
+
+subset=data.loc[data.mutation.sin(['WT','V456D']),:]
+
+
+def null (p,obs):
+    B0=p[0]
+    sigma=p[1]
+    
+    expected=B0
+    nll=-1*norm(expected,sigma).logpdf(obs.y).sum()
+    return nll
+    
+def alter (p,obs):
+    B0=p[0]
+    B1=p[1]
+    sigma=p[2]
+    
+    expected=B0+B1*obs.x
+    nll=-1*norm(expected,sigma).logpdf(obs.y).sum()
+    return nll
+
+initialGuess=numpy.array([1,1,1])
+fitNull=minimize(null,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
+fitAlter=minimize(alter,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
+
+
+
