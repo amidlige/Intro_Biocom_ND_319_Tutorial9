@@ -9,10 +9,12 @@ from plotnine import *
 
 os.chdir("/Users/madelinebuynak/Desktop")
 
+#load data
 data = pandas.read_csv("ponzr1.csv",header=0,sep='\t')
 
-subset=data.loc[data.mutation.sin(['WT','M124K']),:]
+subset=data.loc[data.mutation.isin(['WT','I231N']),:]
 
+#two likelihood functions
 def nllike(p,obs):
     B0=p(0)
     B1=p(1)
@@ -63,6 +65,11 @@ def alter (p,obs):
 initialGuess=numpy.array([1,1,1])
 fitNull=minimize(null,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
 fitAlter=minimize(alter,initialGuess,method="Nelder-Mead",options={'disp':True},args=subset)
+
+D=2*(fitNull.fun-fitAlter.fun)
+1-ch2.cdf(x=D,df=1)
+
+
 
 
 
