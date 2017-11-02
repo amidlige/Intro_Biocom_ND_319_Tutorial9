@@ -69,6 +69,11 @@ fitAlter=minimize(alter,initialGuess,method="Nelder-Mead",options={'disp':True},
 D=2*(fitNull.fun-fitAlter.fun)
 1-ch2.cdf(x=D,df=1)
 
+#M124K: p-value ~ 0.72 (no effect of treatment)
+
+#V456D: p-value ~ 5.6e-6 (effect of treatment)
+
+#I213N: p-value ~ 0.88 (no effect of treatment)
 
 
 
